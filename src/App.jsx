@@ -1,5 +1,11 @@
+import Page from "./components/Page";
+
 function App() {
-    return <></>;
+    return (
+        <>
+            <Page />
+        </>
+    );
 }
 
 export default App;
