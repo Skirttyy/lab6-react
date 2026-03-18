@@ -1,7 +1,7 @@
 import "./Page.css"
 import { letters } from "../constants/letters"
 import { stages } from "../constants/stages"
-import { words } from"../constants/words"
+import { words } from "../constants/words"
 
 import Letter from "./Letter"
 import { useState } from "react"
@@ -13,7 +13,7 @@ export default function Page () {
 
     const [stageNumber, setStageNumber] = useState(0)
     const [revealedWord, setRevealedWord] = useState(new Array(randomWord.length).fill("_"))
-    const [clickedWords, setClickedWords] = useState([])
+    const [clickedLetters, setClickedLetters] = useState([])
     const [finalResult, setFinalResult] = useState(null)
 
     function handleSelectLetter (index) {
@@ -26,7 +26,7 @@ export default function Page () {
                 }
             }
         } else {
-            setClickedWords([...clickedWords, letters[index]])
+            setClickedLetters([...clickedLetters, letters[index]])
             setStageNumber(stageNumber + 1)
         }
 
@@ -42,32 +42,32 @@ export default function Page () {
         setStageNumber(0)
         setFinalResult(null)
         setRevealedWord(new Array(randomWord.length).fill("_"))
-        setClickedWords([])
+        setClickedLetters([])
     }
 
     return (
         <div className="page-container">
             <div className="image-container">
-                <img className="image-style" src={stages[stageNumber]}></img>
+                <img className="image-style" src={stages[stageNumber]} alt="hangman stage" />
             </div>
             <div>
                 <Result result={finalResult != null ? finalResult : null} resetHandler={resetHandler}/>
             </div>
             <div className="revealed-word-container">
-                {revealedWord.map((value) => {
-                    return <p>{value}</p>
+                {revealedWord.map((value, index) => {
+                    return <p key={index}>{value}</p>
                 })}
             </div>
             <div className="letters-container">
                 {letters.map((value, index) => {
                     if (finalResult != null) {
-                        return <></>
+                        return null
                     } else if (revealedWord.includes(value)) {
-                        return <Letter letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={false}/>
-                    } else if (clickedWords.find((letter) => letter === value)) {
-                        return <Letter letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={false}/>
+                        return <Letter key={value} letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={false}/>
+                    } else if (clickedLetters.find((letter) => letter === value)) {  // ✅ Bug 2
+                        return <Letter key={value} letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={false}/>
                     } else {
-                        return <Letter letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={true}/>
+                        return <Letter key={value} letter={value} onClickHandler={() => handleSelectLetter(index)} isActive={true}/>
                     }
                 })}
             </div>
